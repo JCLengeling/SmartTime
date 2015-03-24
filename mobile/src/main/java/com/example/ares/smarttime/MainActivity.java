@@ -4,14 +4,46 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextClock;
+import android.widget.TextView;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private GregorianCalendar current;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+
+        Thread t = new Thread(){
+            public void run(){
+                try{
+                    while(!isInterrupted()){
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                    current = new GregorianCalendar();
+                                    setContentView(R.layout.activity_main);
+                                    TextView t = (TextView)findViewById(R.id.clockText);
+
+                                    String timeText = String.valueOf(current.getTime());
+                                    t.setText(timeText);
+
+                            }
+                        });
+                    }
+                }catch (InterruptedException e){
+                }
+            }
+        };
+        t.start();
     }
 
 
