@@ -14,6 +14,8 @@ import java.util.GregorianCalendar;
 
 public class MainActivity extends ActionBarActivity {
 
+    private char octal[]={'0','1','2','3','4','5','6','7'};
+    private char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
     private GregorianCalendar current;
 
     @Override
@@ -29,12 +31,19 @@ public class MainActivity extends ActionBarActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                    current = new GregorianCalendar();
-                                    setContentView(R.layout.activity_main);
-                                    TextView t = (TextView)findViewById(R.id.clockText);
+                                current = new GregorianCalendar();
+                                setContentView(R.layout.activity_main);
+                                TextView number = (TextView)findViewById(R.id.clockNumberText);
+                                TextView bin = (TextView)findViewById(R.id.clockBinText);
+                                TextView octa = (TextView)findViewById(R.id.clockOctaText);
+                                TextView hex = (TextView)findViewById(R.id.clockHexText);
 
-                                    String timeText = String.valueOf(current.getTime());
-                                    t.setText(timeText);
+                                int minutes =  (int)((current.getTimeInMillis()/(1000*60))% 60);
+
+                                number.setText(String.valueOf(minutes));
+                                bin.setText(transformToBinary(minutes));
+                                octa.setText(transformToOctal(minutes));
+                                hex.setText(transformToHex(minutes));
 
                             }
                         });
@@ -44,6 +53,39 @@ public class MainActivity extends ActionBarActivity {
             }
         };
         t.start();
+    }
+
+    private String transformToBinary(int value){
+        if (value == 0){
+            return "0";
+        }
+        if (value == 1){
+            return "1";
+        }
+        if(value %2 == 0 ){
+            return transformToBinary(value/2)+"0";
+        }
+        else{
+            return transformToBinary(value/2)+"1";
+        }
+    }
+    private String transformToOctal(int value ){
+        String ret ="";
+        while(value >0){
+            int tmp = value %8;
+            ret = octal[tmp]+ret;
+            value = value /8;
+        }
+        return ret;
+    }
+    private String transformToHex(int value){
+        String ret="";
+        while(value >0){
+            int tmp = value %16;
+            ret = hex[tmp]+ret;
+            value = value /16;
+        }
+        return ret;
     }
 
 
